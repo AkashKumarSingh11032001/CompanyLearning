@@ -1,0 +1,35 @@
+Here are the 10 main points for NVMe Format:
+
+1. Purpose: The Format NVM command is used to perform a low-level format of the NVM media, which can change the attributes of the NVM media, such as LBA data size and/or metadata size.
+
+2. Scope: The format operation can affect all namespaces attached to the controller or a specific namespace specified in the command.
+
+3. Secure Erase: The Format NVM command can request a secure erase of the contents of the NVM, which can be either a User Data Erase or a Cryptographic Erase.
+
+4. Format Operation: The format operation can be performed on all namespaces attached to the controller or a specific namespace specified in the command.
+
+5. Namespace Identifier (NSID): The NSID field in the command specifies the namespace to be formatted. A value of FFFFFFFFh indicates that all namespaces attached to the controller should be formatted.
+
+6. Format NVM Attributes: The Format NVM Attributes field in the Identify Controller data structure determines the scope of the format operation and the type of secure erase, if applicable.
+
+7. Abort Conditions: The Format NVM command can be aborted under certain conditions, such as if there are I/O commands being processed for a namespace, or if a security specification is not met.
+
+8. Status Codes: The Format NVM command can return various status codes, including Asymmetric Access Inaccessible, Asymmetric Access Persistent Loss, Command Sequence Error, and Format in Progress.
+
+9. Restrictions: There are restrictions on Admin Commands during Format NVM, and I/O commands submitted for a namespace affected by a Format NVM command may be aborted.
+
+10. Completion: After successful completion of a Format NVM command, the settings specified in the command are reported as part of the Identify Namespace data structures.
+
+Now, let's discuss how NVMe Format is different from Sanitize:
+Key differences:
+
+    + Purpose: Sanitize is a security feature that securely erases all user data and cryptographic keys from a namespace, while Format NVM is a low-level format operation that can change the attributes of the NVM media.
+
+    + Scope: Sanitize typically affects a single namespace, while Format NVM can affect all namespaces attached to the controller or a specific namespace.
+
+    + Erase type: Sanitize performs a cryptographic erase, which deletes the encryption key, while Format NVM can perform either a User Data Erase or a Cryptographic Erase.
+
+    + Namespace state: Sanitize leaves the namespace in a secure erased state, while Format NVM can leave the namespace in a formatted state with new attributes.
+
+
+In summary, while both Sanitize and Format NVM are used to erase data from a namespace, they serve different purposes and have different scopes, erase types, and command structures. Sanitize is a security feature that securely erases user data and cryptographic keys, while Format NVM is a low-level format operation that can change the attributes of the NVM media.
