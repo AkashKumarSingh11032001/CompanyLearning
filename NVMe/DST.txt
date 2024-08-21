@@ -1,0 +1,54 @@
++++++++ DST FYI +++++++
+
+1. It is a diagostic testing seq that test the intregrity and functionality of the controller as well as if media available with associated namespace.
+2. 4 main opertion can be performed: short DST / extended DST / vendor specifc DST / abort DST 
+3. DST can be performed @ controller level (0x0), @ specific NS (0x1 - 0xfffffffe) or @ all NS (0xffffffff)
+4. CD-10 : bit 0-3 : type of operation to perform (#2)
+5. DST command processing:
+    DST in progress: Yes
+        * Short device self-test / Extended device self-test : Abort with Device Self-test in Progress.
+        * Vendor specific: Vendor specific reponse
+        * Abort device self-test: 
+            + Abort dst in progress
+            + creat log entry
+            + set current DST status field to 0h in DST log.
+            + complete command succesfully
+    DST in progress: No
+        * Short device self-test :
+            + validate cmd parameter
+            + set current DST status field to 1h in DST log.
+            + start dst
+            + complete command succesfully
+        * Extended device self-test :
+            + validate cmd parameter
+            + set current DST status field to 2h in DST log.
+            + start dst
+            + complete command succesfully
+        * Vendor specific: Vendor specific
+        * Abort device self-test: Completes command successfully
+6. A device self-test operation is performed in the background allowing concurrent processing of some commands but some command requre suspension of DST operation.
+    in that case Controler will follow following steps:
+        + suspend DST
+        + process and complete requested cojmand
+        + resume DST
+7. Short DST:
+    + It should complete in 2 min or less.
+    + short DST wil be aborted bt any controller level resets, format nvme cmd, sanitize opr.
+8. Extended DSt:
+    + It should complete in within the time indictated in Extended dst time field in identify controller data structure.
+    + extended dst will persist across any controller level reset and will resume after reset or restoration of power.
+    + extended dst will be abborted by format nvme, sanitize opr, dst with self test code set to 0xFh
+9. Following operation is been performed during DST.
+    + Ram check [ short + extended only ]
+    + SMART check [ short + extended only ]
+    + Volatile memory backup [ short + extended only ]
+    + Metadata validation [ short + extended only ] 
+    + NVM integrity [ short + extended only ]
+    + Media Check [ short + extended only ]
+    + Drive Life [ short + extended only ]
+    + Data Integrity [ extended only ]
+10. DST will run over the loop and each loop/ iteration log page will be listed to dst log data structure after 2 field. so total 20 DST iteration is supported.
+
+
+
+        

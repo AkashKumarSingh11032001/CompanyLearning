@@ -1,0 +1,39 @@
+1. Purpose: Sanitize operations permanently erase all user data from an NVMe subsystem, making it unrecoverable.
+2. Scope: The operation affects all areas where user data can be stored, including caches, persistent memory, and unallocated media.
+3. Irreversibility: Once started, a sanitize operation cannot be aborted and continues even after power cycles or controller resets.
+4. Background Process: Sanitize operations are performed in the background, and their completion is indicated by asynchronous events or log page updates.
+5. Supported Types: NVMe supports three sanitize operation types: Block Erase, Crypto Erase, and Overwrite.
+    + Types         Block Erase        Crypto Erase                                Overwrite
+    + Purpose       Erase all blocks   Erase all blocks with cryptographic erase   Overwrite all blocks with random data
+    + Security      Moderate           High                                        Less than Crypto erase
+    + Endurance     High               High                                        Moderate
+    + performance   Fast               Slower                                      Avg
+6. Media-Specific: The Overwrite sanitize operation may not be suitable for all media types due to potential endurance issues.
+7. No-Deallocate Option: The No-Deallocate After Sanitize option allows for media modifications after a successful sanitize operation.
+8. Sanitize Status Log Page: This log page provides information about the progress and status of sanitize operations.
+9. Asynchronous Events: The controller generates asynchronous events to notify the host about the completion of sanitize operations.
+10. Recovery: A failed sanitize operation can be recovered from by starting a subsequent sanitize operation or using the Exit Failure Mode action.
+11. sanitize operation starts on any controller, all controllers in the NVM subsystem follow belows rules
+    + clear any outstanding sanitize opr.
+    + update sanitize log.
+    + abort any command.
+    + abort dst.
+    + suspend autonomous power state management activites.
+12. use CD 10 & CD 11
+13. Sanitize flow : 
+            To start a sanitize operation, the host submits a Sanitize command specifying one of the sanitize operation 
+            types (i.e., Block Erase, Overwrite, or Crypto Erase). The host sets command parameters, including the 
+            Allow Unrestricted Sanitize Exit bit and the No-Deallocate After Sanitize bit. After validating the Sanitize 
+            command parameters, the controller starts the sanitize operation in the background, updates the Sanitize 
+            Status log page and then completes the Sanitize command with Successful Completion status. If the 
+            sanitize operation is to be followed by an associated additional media modification operation (refer to 
+            NODMMAS in Figure 275), then the associated additional media modification operation shall be completed 
+            before the controller reports sanitize operation complete. If a Sanitize command is completed with any 
+            status code other than Successful Completion, then the controller shall not start the sanitize operation and 
+            shall not update the Sanitize Status log page. The controller ignores Critical Warning(s) in the SMART / 
+            Health Information log page (e.g., read only mode) and attempts to complete the sanitize operation 
+            requested.
+
+
+Key Term:
+1. Endurance in the context of NVMe storage refers to the number of write cycles a storage device can withstand before its performance starts to degrade significantly
