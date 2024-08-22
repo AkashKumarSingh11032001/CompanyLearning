@@ -1,0 +1,28 @@
+Here's a breakdown of the Telemetry Host-Initiated Log:
+
+What is it? The Telemetry Host-Initiated Log is a log page that captures the internal controller state of the NVM subsystem in response to a host-initiated request. The log page consists of a header and zero or more Telemetry Data Blocks, each 512 bytes in size.
+
+How to request it? The host can request the Telemetry Host-Initiated Log by sending a Get Log Page command with the Create Telemetry Host-Initiated Data bit set to '1' in the Log Specific field. The host must specify a Log Page Offset Lower value that is a multiple of 512 bytes.
+
+Log page structure The log page consists of:
+    + A header that describes the log
+    + Zero or more Telemetry Data Blocks, each 512 bytes in size
+    + The Telemetry Data Blocks are divided into areas, with each area starting at block 1 and ending at the block indicated in the corresponding Last Block field
+    + The size of the log page is variable and depends on the number of areas and blocks present
+
+Areas and blocks The Telemetry Host-Initiated Data consists of three or four areas, depending on the value of bit 6 of the Log Page Attributes field. Each area has a Last Block field that indicates the last block of that area.
+
+    + Telemetry Host-Initiated Data Area 1
+    + Telemetry Host-Initiated Data Area 2
+    + Telemetry Host-Initiated Data Area 3
+    + Telemetry Host-Initiated Data Area 4 (optional)
+    
+Telemetry Data Blocks Each Telemetry Data Block is 512 bytes in size and contains telemetry data captured by the controller. The blocks are numbered starting from 1, and the last block of each area is indicated in the corresponding Last Block field.
+
+Reason Identifier The Reason Identifier field contains a vendor-specific identifier that describes the operating conditions of the controller at the time of capture.
+
+Telemetry Host-Initiated Data Generation Number The Telemetry Host-Initiated Data Generation Number field contains a value that is incremented each time the controller captures its internal controller state for this log page.
+
+Telemetry Controller-Initiated Data Available and Generation Number The Telemetry Controller-Initiated Data Available and Generation Number fields contain values from the Telemetry Controller-Initiated log.
+
+Error handling If the host requests a data transfer that is not a multiple of 512 bytes, the controller shall return an error of Invalid Field in Command.

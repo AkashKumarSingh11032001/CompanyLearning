@@ -1,0 +1,33 @@
+The Asynchronous Event Request command is used to notify the host software of status, error, and health information as these events occur. The host software submits one or more AER commands to the controller, which then reports asynchronous events to the host by completing the AER command.
+
+Key Features
+
+1. No timeout: The AER command has no timeout, meaning the controller can complete the command at any time when an asynchronous event occurs.
+
+2. Multiple outstanding commands: The host software can submit multiple AER commands to reduce event reporting latency. The total number of outstanding AER commands is limited by the Asynchronous Event Request Limit specified in the Identify Controller data structure.
+
+3. Event types: Asynchronous events are grouped into event types, which are indicated in the Asynchronous Event Type field in the completion queue entry for the AER command.
+
+4. Event clearing: Events are cleared by reading the associated log page using the Get Log Page command. If the log page is not accessible, the controller will not post a completion queue entry for that asynchronous event until the log page can be successfully returned.
+
+5. Event types and clearing: There are six event types:
+    + Error event: Cleared by reading the Error Information log page.
+    + SMART / Health Status event: Cleared by reading the SMART / Health Information log page.
+    + Notice event: Cleared by reading the appropriate log page.
+    + I/O Command Specific Status events: Cleared by reading the associated log page.
+    + Immediate events: No log page is associated with these events.
+    + Vendor Specific event: Cleared by reading the indicated vendor-specific log page.
+
+6. How it works
+
+    1. The host software submits one or more AER commands to the controller.
+    2. The controller specifies an event to the host by completing an AER command when an asynchronous event occurs.
+    3. The host software expects the controller to complete the command when there is an event to be reported.
+            + If multiple events of the same type occur, they may be reported as a single response to an AER command.
+            + If multiple events of different types occur, the controller retains a queue of those events for reporting in   responses to subsequent AER commands.
+
+7. Benefits
+
+    + Improved responsiveness: The AER command allows the host software to receive timely notifications of asynchronous events, enabling more responsive error handling and health monitoring.
+    + Reduced latency: By submitting multiple AER commands, the host software can reduce event reporting latency and improve overall system performance.
+    + Enhanced error handling: The AER command enables the host software to handle errors and health events more efficiently, reducing the risk of data loss or system downtime.

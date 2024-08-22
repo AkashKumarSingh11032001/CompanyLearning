@@ -1,0 +1,17 @@
++++++ SMART/HEALTH LOG ++++++
+
+What is it? The SMART/Health Log Page is a log page that provides SMART (Self-Monitoring, Analysis, and Reporting Technology) and general health information about the NVM subsystem.
+
+How to request it? To request the SMART/Health Log Page, the host should specify a namespace identifier of FFFFFFFFh or 0h (controller level). For compatibility with older implementations, hosts can use a namespace identifier of FFFFFFFFh.
+
+Per-namespace support The controller may support requesting the log page on a per-namespace basis, which is indicated by bit 0 of the LPA field in the Identify Controller data structure. If the log page is not supported on a per-namespace basis, specifying a namespace identifier other than 0h or FFFFFFFFh should abort the command with a status code of Invalid Field in Command.
+
+Log page contents The SMART/Health Log Page contains information about the health of the NVM subsystem, including critical warnings that may be indicated via an asynchronous event notification to the host. The log page also provides performance metrics, such as the number of Read or Write commands, the amount of data read or written, and the amount of controller busy time, which can be used to calculate I/Os per second and bandwidth.
+
+Asynchronous event notification Critical warnings regarding the health of the NVM subsystem may be indicated via an asynchronous event notification to the host. The warnings that result in an asynchronous event notification to the host are configured using the Set Features command.
+
+Performance calculation Performance metrics can be calculated using the parameters returned as part of the SMART/Health Information log. Specifically, the number of Read or Write commands, the amount of data read or written, and the amount of controller busy time enable both I/Os per second and bandwidth to be calculated.
+
+Log page format The log page returned is defined in Figure 207 of the NVM Express Base Specification.
+
+In summary, the SMART/Health Log Page provides important information about the health and performance of the NVM subsystem, and can be requested by the host using a specific namespace identifier. The log page contents include critical warnings, performance metrics, and other health information that can be used to monitor and maintain the NVM subsystem.
